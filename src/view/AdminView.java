@@ -10,16 +10,11 @@ import business.CarManager;
 import business.ModelManager;
 import core.ComboItem;
 import core.Helper;
-import entity.Brand;
-import entity.Car;
-import entity.Model;
-import entity.User;
+import entity.*;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.text.MaskFormatter;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.text.ParseException;
@@ -57,6 +52,12 @@ public class AdminView extends Layout {
     private javax.swing.JLabel JLabel;
     private JButton btn_booking_search;
     private JButton btn_cncl_booking;
+    private JPanel pnl_booked;
+    private JTable tbl_booked;
+    private JScrollPane scrl_booked;
+    private JComboBox cmb_booked_plate;
+    private JButton btn_booked_search;
+    private JButton btn_booked_clear;
 
     private User user;
 
@@ -64,6 +65,7 @@ public class AdminView extends Layout {
     private DefaultTableModel tableModel_model;
     private DefaultTableModel tableModel_car;
     private DefaultTableModel tableModel_booking;
+    private DefaultTableModel tableModel_booked;
 
     private BrandManager brandManager;
     private ModelManager modelManager;
@@ -74,15 +76,18 @@ public class AdminView extends Layout {
     private JPopupMenu model_menu;
     private JPopupMenu car_menu;
     private JPopupMenu booking_menu;
+    private JPopupMenu booked_menu;
 
     private Object[] col_model;
     private Object[] col_car;
+    private Object[] col_booked_list;
 
     public AdminView(User user) {
         this.tableModel_brand = new DefaultTableModel();
         this.tableModel_model = new DefaultTableModel();
         this.tableModel_car = new DefaultTableModel();
         this.tableModel_booking = new DefaultTableModel();
+        this.tableModel_booked = new DefaultTableModel();
 
         this.brandManager = new BrandManager();
         this.modelManager = new ModelManager();
@@ -118,6 +123,11 @@ public class AdminView extends Layout {
         loadBookingTable(null);
         loadBookingComponent();
         loadBookingFilter();
+
+        // Booked tab menu
+        loadBookingInfoTable(null);
+        loadBookedComponent();
+        loadBookedFilterPlate(this.bookManager.findAll());
 
     }
 
@@ -181,6 +191,65 @@ public class AdminView extends Layout {
         this.cmb_booking_fuel.setSelectedItem(null);
     }
 
+    public void loadBookedComponent() {
+        tableRowSelect(this.tbl_booked);
+
+        this.booked_menu = new JPopupMenu();
+
+        this.booked_menu.add("Sil").addActionListener(e -> {
+            if (Helper.confirm("sure")){
+                int selectBooktId = this.getTableSelectedRow(tbl_booked,0);
+                if (this.bookManager.delete(selectBooktId)){
+                    loadBookingInfoTable(null);
+                }else{
+                    Helper.showMsg("error");
+                }
+            }
+        });
+        this.tbl_booked.setComponentPopupMenu(booked_menu);
+
+        this.btn_booked_search.addActionListener(e -> {
+            ComboItem selectedPlate = (ComboItem) this.cmb_booked_plate.getSelectedItem();
+            ArrayList<Book> filteredByPlateBooks = new ArrayList<>();
+            if (selectedPlate != null) {
+                for (Book book : this.bookManager.findAll()) {
+                    if (book.getCar().getPlate().equals(selectedPlate.getValue())) {
+                        filteredByPlateBooks.add(book);
+                    }
+                }
+            }
+
+            ArrayList<Object[]> bookRowListBySearch = this.bookManager.getForTable(this.col_booked_list.length, filteredByPlateBooks);
+            loadBookingInfoTable(bookRowListBySearch);
+        });
+
+        btn_booked_clear.addActionListener(e -> {
+            this.cmb_booked_plate.setSelectedItem(null);
+            loadBookingInfoTable(null);
+        });
+    }
+
+    public void loadBookingInfoTable (ArrayList<Object[]> bookingInfoList ) {
+        col_booked_list = new Object[]{"ID", "Brand", "Model", "Plate", "Customer Name", "ID No", "Phone Number", "Start Date", "Finish Date", "Booking Price", "Note", "State"};
+
+        if (bookingInfoList == null) {
+            bookingInfoList = this.bookManager.getForTable(col_booked_list.length,this.bookManager.findAll());
+        }
+        this.createTable(this.tableModel_booked, this.tbl_booked, col_booked_list, bookingInfoList);
+    }
+
+    public void loadBookedFilterPlate(ArrayList<Book> books) {
+        this.cmb_booked_plate.removeAllItems();
+        ArrayList<String> plateList = new ArrayList<>();
+        for (Book obj :books) {
+            String plate = obj.getCar().getPlate();
+            if(!plateList.contains(plate)){
+                this.cmb_booked_plate.addItem(new ComboItem(obj.getId(), obj.getCar().getPlate()));
+                plateList.add(plate);
+            }
+        }
+        this.cmb_booked_plate.setSelectedItem(null);
+    }
 
 
     private void loadCarComponent() {
