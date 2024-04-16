@@ -12,35 +12,17 @@
     // Business
     // View
 
-import business.UserManager;
-import core.Db;
+import core.Helper;
 import view.AdminView;
 import view.LoginView;
-
-import java.sql.Connection;
-import java.sql.DriverManager;
 public class App {
     public static void main(String[] args) {
 
-        // VERİTABANI BAĞLANTI KONTROLU
-        // Singleton design pattern olsun diye bu işlemi core>Db sınıfında yaptık
-//        try {
-//            Connection connection = DriverManager.getConnection(
-//                    "jdbc:postgresql://localhost:5432/rentacar",
-//                    "postgres",
-//                    "postgres"
-//            );
-//        } catch (Exception e) {
-//            System.out.println(e.getMessage());
-//        }
+        Helper.setTheme();
+        LoginView loginView = new LoginView();
 
-       // Connection conn = Db.getInstance();
-
-
-        //Helper.setTheme();
-
-        UserManager userManager = new UserManager();
-        AdminView adminView = new AdminView(userManager.findByLogin("admin","1234"));
+        //UserManager userManager = new UserManager();
+        //AdminView adminView = new AdminView(userManager.findByLogin("admin","1234"));
 
 
 

@@ -98,6 +98,9 @@ public class AdminView extends Layout {
         }
         this.label_welcome.setText(" Welcome " + this.user.getUsername());
 
+        //General Code
+        loadComponent();
+
         //Car Tab Menu
         loadCarTable();
         loadCarComponent();
@@ -116,8 +119,14 @@ public class AdminView extends Layout {
         loadBookingComponent();
         loadBookingFilter();
 
-
     }
+
+    public void loadComponent(){
+        this.button_logout.addActionListener(e -> {
+            dispose();
+            LoginView loginView = new LoginView();
+        });
+    };
 
     public void loadBookingComponent(){
         tableRowSelect(this.tbl_booking);
@@ -195,6 +204,7 @@ public class AdminView extends Layout {
                     loadCarTable();
                 }
             });
+            loadBookingTable(null);
         });
         this.car_menu.add("Delete").addActionListener(e -> {
             if (Helper.confirm("sure")) {
@@ -241,6 +251,7 @@ public class AdminView extends Layout {
                 @Override
                 public void windowClosed(WindowEvent e) {
                     loadModelTable(null);
+                    loadBookingTable(null);
                 }
             });
         });
@@ -335,6 +346,7 @@ public class AdminView extends Layout {
                     loadBrandTable();
                     loadModelTable(null);
                     loadModelFilterBrand();
+                    loadBookingTable(null);
                 }
             });
         });

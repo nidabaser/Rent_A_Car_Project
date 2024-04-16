@@ -102,26 +102,21 @@ public class CarManager {
 
         ArrayList<Car> searchedCarList = this.carDao.selectByQuery(query);
 
-        // Sayı Doğrusu sorguları :)
         bookOrWhere.add("('" + strt_date + "' BETWEEN book_start_date AND book_finish_date)");
         bookOrWhere.add("('" + fnsh_date + "' BETWEEN book_start_date AND book_finish_date)");
         bookOrWhere.add("(book_start_date BETWEEN '" + strt_date + "' AND '" + fnsh_date + "')");
         bookOrWhere.add("(book_finish_date BETWEEN '" + strt_date + "' AND '" + fnsh_date + "')");
 
         String bookOrWhereStr = String.join(" OR ", bookOrWhere);
-
         String bookQuery = "SELECT * FROM public.book WHERE " + bookOrWhereStr;
 
         ArrayList<Book> bookList = this.bookDao.selectByQuery(bookQuery);
-
         ArrayList<Integer> busyCarId = new ArrayList<>();
-
         for (Book book : bookList) {
             busyCarId.add(book.getCar_id());
         }
 
         searchedCarList.removeIf(car -> busyCarId.contains(car.getId()));
-
         return searchedCarList;
     }
 }
