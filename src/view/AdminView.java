@@ -230,7 +230,7 @@ public class AdminView extends Layout {
     }
 
     public void loadBookingInfoTable (ArrayList<Object[]> bookingInfoList ) {
-        col_booked_list = new Object[]{"ID", "Brand", "Model", "Plate", "Customer Name", "ID No", "Phone Number", "Start Date", "Finish Date", "Booking Price", "Note", "State"};
+        col_booked_list = new Object[]{"ID", "Car ID", "Customer Name", "Customer ID", "Customer Phone Number", "Customer Mail", "Start Date", "Finish Date", "Booking Price", "Note", "State"};
 
         if (bookingInfoList == null) {
             bookingInfoList = this.bookManager.getForTable(col_booked_list.length,this.bookManager.findAll());
@@ -255,6 +255,7 @@ public class AdminView extends Layout {
     private void loadCarComponent() {
         tableRowSelect(this.table_car);
         this.car_menu = new JPopupMenu();
+
         this.car_menu.add("New").addActionListener(e -> {
             CarView carView = new CarView(new Car());
             carView.addWindowListener(new WindowAdapter() {
@@ -301,6 +302,7 @@ public class AdminView extends Layout {
         tableRowSelect(this.table_model);
 
         this.model_menu = new JPopupMenu();
+
         this.model_menu.add("New").addActionListener(e -> {
             ModelView modelView = new ModelView(new Model());
             modelView.addWindowListener(new WindowAdapter() {
@@ -313,7 +315,6 @@ public class AdminView extends Layout {
         });
 
         this.model_menu.add("Update").addActionListener(e -> {
-
             int selectModelId = this.getTableSelectedRow(table_model, 0);
             ModelView modelView = new ModelView(this.modelManager.getById(selectModelId));
             modelView.addWindowListener(new WindowAdapter() {
@@ -324,8 +325,8 @@ public class AdminView extends Layout {
                 }
             });
         });
-        this.model_menu.add("Delete").addActionListener(e -> {
 
+        this.model_menu.add("Delete").addActionListener(e -> {
             if (Helper.confirm("sure")) {
                 int selectModelId = this.getTableSelectedRow(table_model, 0);
                 if (this.modelManager.delete(selectModelId)) {
@@ -336,6 +337,7 @@ public class AdminView extends Layout {
                 }
             }
         });
+
         this.table_model.setComponentPopupMenu(this.model_menu);
 
         this.btn_search_model.addActionListener(e -> {
@@ -377,6 +379,12 @@ public class AdminView extends Layout {
 
     }
 
+    public void loadModelTable() {
+        Object[] column_model = {"Model ID", "Brand", "Name", "Type", "Year", "Fuel", "Gear"};
+        ArrayList<Object[]> modelList = this.modelManager.getForTable(column_model.length, this.modelManager.findAll());
+        createTable(this.tableModel_model, this.table_model, column_model, modelList);
+    }
+
 
 
 
@@ -392,8 +400,8 @@ public class AdminView extends Layout {
 
     public void loadBrandComponent() {
         tableRowSelect(this.table_brand);
-        // Pop-Up Menu New, Update, Delete Actions
         this.brand_menu = new JPopupMenu();
+
         this.brand_menu.add("New").addActionListener(e -> {
             BrandView brandView = new BrandView(null);
             brandView.addWindowListener(new WindowAdapter() {
@@ -434,19 +442,6 @@ public class AdminView extends Layout {
         });
         this.table_brand.setComponentPopupMenu(this.brand_menu);
     }
-
-
-
-
-
-    public void loadModelTable() {
-        Object[] column_model = {"Model ID", "Brand", "Name", "Type", "Year", "Fuel", "Gear"};
-        ArrayList<Object[]> modelList = this.modelManager.getForTable(column_model.length, this.modelManager.findAll());
-        createTable(this.tableModel_model, this.table_model, column_model, modelList);
-    }
-
-
-
 
     public void loadModelFilter() {
         this.cmb_s_model_type.setModel(new DefaultComboBoxModel<>(Model.Type.values()));

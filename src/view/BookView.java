@@ -45,12 +45,12 @@ public class BookView extends Layout{
         this.fld_book_fnsh_date.setText(fnsh_date);
 
         // For testing purposes
-        this.fld_book_name.setText("John Doe");
-        this.fld_book_idno.setText("12345678911");
-        this.fld_book_mail.setText("John@test.dev");
-        this.fld_book_mpno.setText("05558887766");
-        this.fld_book_prc.setText("5000");
-        this.txta_book_note.setText("Left some notes");
+//        this.fld_book_name.setText("John Doe");
+//        this.fld_book_idno.setText("12345678911");
+//        this.fld_book_mail.setText("John@test.dev");
+//        this.fld_book_mpno.setText("05558887766");
+//        this.fld_book_prc.setText("5000");
+//        this.txta_book_note.setText("Left some notes");
 
         btn_book_save.addActionListener(e -> {
             JTextField[] checkFieldList = {

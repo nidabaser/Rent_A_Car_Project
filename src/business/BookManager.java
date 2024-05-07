@@ -44,6 +44,16 @@ public class BookManager {
             int i = 0;
             Object[] rowObject = new Object[size];
             rowObject[i++] = obj.getId();
+            rowObject[i++] = obj.getCar_id();
+            rowObject[i++] = obj.getName();
+            rowObject[i++] = obj.getIdno();
+            rowObject[i++] = obj.getMpno();
+            rowObject[i++] = obj.getMail();
+            rowObject[i++] = obj.getStrt_date();
+            rowObject[i++] = obj.getFnsh_date();
+            rowObject[i++] = obj.getPrc();
+            rowObject[i++] = obj.getNote();
+            rowObject[i++] = obj.getbCase();
             bookList.add(rowObject);
         }
         return bookList;
